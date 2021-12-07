@@ -8,6 +8,12 @@ app.use(express.static('./assets'));
 //ejs layouts 
 app.use(expressLayouts);
 
+//extract styles nd scripts from sub pages into layout
+app.set('layout extractStyles',true);
+app.set('layout extractScripts',true);
+
+
+
 // using expres router
 app.use('/',require('./routes'));
 
