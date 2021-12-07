@@ -5,16 +5,3 @@ module.exports.home = function(req,res){
 
 
 
-// module.exports.profile = function(req,res){
-//     return res.('');
-// }
-
-
-
-
-
-
-
-
-
-//module.exports = router;

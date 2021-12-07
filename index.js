@@ -12,7 +12,7 @@ app.listen(port,function(err){
 if(err){
     console.log('error',error in running);
 }
-else {
+{
     console.log(`server running on port number: ${port}`);//``interpolation 
 }
 });

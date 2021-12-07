@@ -5,7 +5,8 @@ const router = express.Router();
 const homeController = require('../controllers/home_controller');
 router.get('/',homeController.home);
 
-// const aboutUs = require('../controllers/home_controller');
-// router.get('/profile',homeController.profile);
+router.use('/users',require('./users'));//request for users 
+
+
 
 module.exports = router;
