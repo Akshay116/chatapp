@@ -4,10 +4,8 @@
   "description": "social web app using node",
   "main": "index.js",
   "scripts": {
-    
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-    
   },
   "keywords": [
     "social"
@@ -15,6 +13,7 @@
   "author": "akshay padmane",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.1.6",
     "express": "^4.17.1"
   }
 }
