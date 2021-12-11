@@ -9,12 +9,20 @@ module.exports.profile = function(req,res){
 
 //render sign up
 module.exports.signUp = function(req,res){
+    if(req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
     return res.render('user_sign_up',{
         title:"chatapp| Sign Up"
     })
 }
 // render sign in
 module.exports.signIn = function(req, res){
+    //to prevent to go to sign in if alreay signed in 
+    if(req.isAuthenticated()){
+       return  res.redirect('/users/profile');
+    }
+
     return res.render('user_sign_in',{
         title:"chatapp|Sign in"
     })
@@ -47,5 +55,5 @@ module.exports.create = function(req, res){
 
 // sign in and create session for user 
 module.exports.createSession = function(req,res){
-    
+    return res.redirect('/');
 }
