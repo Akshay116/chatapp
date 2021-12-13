@@ -5,9 +5,13 @@ const port = 8000;
 const expressLayouts =require('express-ejs-layouts');
 const db = require('./config/mongoose');
 //for session cookie
-const session = require('express-session');//
+const session = require('express-session');//express-session
 const passport = require('passport');
 const passportlocal = require('./config/passport-local-strategy');
+const { Mongoose } = require('mongoose');
+// const { MongoDBStore } = require('connect-mongodb-session');
+
+ const MongoStore = require('connect-mongo');//(session);
 
 
 
@@ -38,6 +42,7 @@ app.set('layout extractScripts',true);
 app.set('view engine','ejs');
 app.set('views', './views');
 
+// mongo stor is used to store session cookie in db
 app.use(session({
     name: 'chatapp',
     // change secret befor e deploy in production mode 
@@ -46,7 +51,29 @@ app.use(session({
     resave: false,
     cookie:{
         maxAge:(1000*60*100)
-    }
+    },
+    store: MongoStore.create(
+       {
+          mongoUrl:'mongodb://localhost/db', //method changed after express 4 documentaion on github/stackoverfllow
+         autoRemove:'disabled'
+        },
+        function(err){
+                    console.log(err || 'connect mongo setup ok');
+                }
+
+    )
+    //store:  new MongoStore(
+    //     {
+            
+        
+    //        mongoConnection : db,
+    //        autoRemove:'disabled'
+        
+    //     },
+    //     function(err){
+    //         console.log(err || 'connect mongo setup ok');
+    //     }
+    // )
 
 
 }));
