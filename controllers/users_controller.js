@@ -27,6 +27,7 @@ module.exports.signIn = function(req, res){
         title:"chatapp|Sign in"
     })
 }
+
 // get the sign up data 
 module.exports.create = function(req, res){
     if (req.body.password != req.body.confirm_password){
@@ -55,5 +56,10 @@ module.exports.create = function(req, res){
 
 // sign in and create session for user 
 module.exports.createSession = function(req,res){
+    return res.redirect('/');
+}
+//sign-out 
+module.exports.destorySession = function(req,res){
+    req.logout();//using passport js 
     return res.redirect('/');
 }
