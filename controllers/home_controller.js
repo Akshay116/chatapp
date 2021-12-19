@@ -20,7 +20,17 @@ module.exports.home = function(req,res){
     // used populate to show specific name from whole user data
     //exec()  in longer query seprate query and call back 
 
-    Post.find({}).populate('user').exec(function(err,posts){
+    Post.find({})
+    .populate('user')
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user'
+
+        }
+    })
+    
+    .exec(function(err,posts){
 
         return res.render('home',{
             title:"ChatApp | Home",
