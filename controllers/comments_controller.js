@@ -1,7 +1,8 @@
 const { redirect } = require('express/lib/response');
 const Comment = require('../models/comment');
 const Post = require('../models/post');
-
+// kept it as call back
+// adding commnets  
 module.exports.create = function(req,res){
 
       Post.findById(req.body.post,function(err,post){

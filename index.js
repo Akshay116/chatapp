@@ -12,7 +12,10 @@ const { Mongoose } = require('mongoose');
 // const { MongoDBStore } = require('connect-mongodb-session');
 
  const MongoStore = require('connect-mongo');//(session);
- const sassMiddleware = require('node-sass-middleware');
+ const sassMiddleware = require('node-sass-middleware');//scss
+ const flash = require('connect-flash');// session flash message
+ const customMware = require('./config/middleware');
+ 
 
  app.use(sassMiddleware({
    src:'./assets/scss',
@@ -92,7 +95,11 @@ app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
 // using expres router
 
+
+app.use(flash());
+app.use(customMware.setFlash);
 app.use('/',require('./routes'));
+
 
 
 
