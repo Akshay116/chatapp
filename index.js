@@ -35,6 +35,8 @@ app.use(express.json());
 
 
 app.use(express.static('./assets'));
+//making upload paths available to broswer 
+app.use('/uploads',express.static(__dirname +'/uploads'))
 
 //ejs layouts 
 app.use(expressLayouts);
