@@ -1,55 +1,85 @@
-const { redirect } = require('express/lib/response');
 const Comment = require('../models/comment');
 const Post = require('../models/post');
-// kept it as call back
-// adding commnets  
-module.exports.create = function(req,res){
+const commentsMailer = require('../mailers/comments_mailer');
+const Like = require('../models/like');
+module.exports.create = async function(req, res){
 
-      Post.findById(req.body.post,function(err,post){
+    try{
+        let post = await Post.findById(req.body.post);
 
-
-        if(post){
-            Comment.create({
+        if (post){
+            let comment = await Comment.create({// create new comment 
                 content: req.body.content,
-                post : req.body.user,
-                user:req.user._id
-
-            },function(err,comment){
-
-                  // updateing comment push by facltd by  mongodb
-                post.comments.push(comment);
-                post.save();// after update save needs to be called 
-
-                res.redirect('/');
-                 
-
+                post: req.body.post,
+                user: req.user._id
             });
+
+            post.comments.push(comment);
+            post.save();
+            
+            comment = await comment.populate('user', 'name email');//.execPopulate();
+            // console.log('entring mail creation');
+            commentsMailer.newComment(comment);// mailer called for mail
+            if (req.xhr){
+                
+    
+                return res.status(200).json({
+                    data: {
+                        comment: comment
+                    },
+                    message: "Post created!"
+                });
+            }
+
+
+            req.flash('success', 'Comment published!');
+
+            res.redirect('/');
         }
-        
-        
-
-      });
-
+    }catch(err){
+        req.flash('error', err);
+        return;
+    }
+    
 }
 
-module.exports.destroy = function(req,res){
-  Comment.findById(req.params.id,function(err,comment){
-      if(comment.user == req.user.id){
 
-         let postId = comment.post;//to update it from database of post to 
+module.exports.destroy = async function(req, res){
 
-         comment.remove();
+    try{
+        let comment = await Comment.findById(req.params.id);
 
-         Post.findByIdAndUpdate(postId,{$pull:{comments:req.params.id}},function(err,post){
-           return res.redirect('back');
-         });
+        if (comment.user == req.user.id){
 
-      }else{
+            let postId = comment.post;
+
+            comment.remove();
+
+            let post = Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}});
+            // to delete associated likes 
+            await Like.deleteMany({likeable:comment._id, onModel: 'Comment'});
+
+            // send the comment id which was deleted back to the views
+            if (req.xhr){
+                return res.status(200).json({
+                    data: {
+                        comment_id: req.params.id
+                    },
+                    message: "Post deleted"
+                });
+            }
+
+
+            req.flash('success', 'Comment deleted!');
+
             return res.redirect('back');
-
-      }
-
-  });
+        }else{
+            req.flash('error', 'Unauthorized');
+            return res.redirect('back');
+        }
+    }catch(err){
+        req.flash('error', err);
+        return;
+    }
+    
 }
-
-
